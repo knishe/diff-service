@@ -3,7 +3,7 @@ Its a web service provides comparison between two binary data
 
 ## Assumption
 
-1.Only provide comparison information for strings
+1. Only provides comparison information for strings
 
 ## Pre-requisite
 
