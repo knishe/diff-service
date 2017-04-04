@@ -66,7 +66,7 @@ public class RestDiffServiceEndpoint implements DiffServiceEndpoint {
         try {
             Result result = diffService.findDiffById(id);
             return Response.status(Response.Status.OK).entity(result).build();
-        } catch (ComparisonNotFoundException e) {
+        } catch (ComparisonNotFoundException|InCompleteComparisonDataException e) {
             LOGGER.log(Level.INFO, e.getMessage(), e);
             return Response.status(Response.Status.OK)
                     .entity(e.getMessage())

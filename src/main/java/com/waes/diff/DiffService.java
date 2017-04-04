@@ -72,11 +72,13 @@ public class DiffService {
      * @return the results consists the comparison informations as {@link Result}
      * @throws ComparisonNotFoundException throw when a comparison is not exist
      */
-    Result findDiffById(String id) throws ComparisonNotFoundException {
+    Result findDiffById(String id) throws ComparisonNotFoundException, InCompleteComparisonDataException {
         ComparisonData<String> data = repository.findTextDataById(id);
 
         if(data == null){
             throw new ComparisonNotFoundException(id);
+        }else if(isInCompleteData(data)){
+            throw new InCompleteComparisonDataException();
         }
 
         String decodedLeft = Base64Utils.getDecodedString(data.getLeft());
@@ -89,6 +91,10 @@ public class DiffService {
         } else {
             return getResult(decodedLeft,decodedRight);
         }
+    }
+
+    private boolean isInCompleteData(ComparisonData<String> data) {
+        return data.isRightEmpty() && data.isLeftEmpty();
     }
 
     private Result getResult(String decodedLeft,String decodedRight) {

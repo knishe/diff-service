@@ -7,6 +7,7 @@ import org.glassfish.grizzly.http.server.HttpServerProbe;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.junit.Ignore;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,17 +21,19 @@ import static java.lang.String.format;
  * @author Nishanthan Krishnakumar
  * @version 1.0
  */
-public class DiffServer {
+@Ignore
+public class TestWebServer {
     private static final String BASE_URL = "http://localhost:9090/";
+    private static HttpServer server;
 
-    public static void main(String[] args) {
+    public static void run(){
         try {
             System.out.println("Starting Diff App local testing server: " + BASE_URL);
 
             final ResourceConfig resourceConfig = new ResourceConfig();
             resourceConfig.register(RestDiffServiceEndpoint.class);
 
-            HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URL), resourceConfig, false);
+           server= GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URL), resourceConfig, false);
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 server.shutdownNow();
             }));
@@ -45,11 +48,13 @@ public class DiffServer {
             server.start();
             System.out.println(format("Diff Server started.\n url=%s\n", BASE_URL));
 
-            Thread.currentThread().join();
-            server.shutdown();
-        } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(DiffServer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException  ex) {
+            Logger.getLogger(TestWebServer.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static void stop(){
+        server.shutdown();
     }
 }
 
